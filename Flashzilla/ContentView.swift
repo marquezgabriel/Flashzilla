@@ -19,7 +19,7 @@ struct ContentView: View {
     @Environment(\.accessibilityDifferentiateWithoutColor) var differentiateWithoutColor
     @Environment(\.accessibilityVoiceOverEnabled) var voiceOverEnabled
     // @State private var cards = Array(repeating: Card.example, count: 10)
-    @State private var cards = [Card]()
+    @State private var cards = DataManager.load()
     
     @State private var timeRemaning = 100
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
@@ -147,14 +147,6 @@ struct ContentView: View {
         .onAppear(perform: resetCards)
     }
     
-    func loadData() {
-        if let data = UserDefaults.standard.data(forKey: "Cards") {
-            if let decoded = try? JSONDecoder().decode([Card].self, from: data) {
-                cards = decoded
-            }
-        }
-    }
-    
     func removeCard(at index: Int, reinsert: Bool) {
         guard index >= 0 else { return }
         
@@ -172,7 +164,7 @@ struct ContentView: View {
     func resetCards () {
         timeRemaning = 100
         isActive = true
-        loadData()
+        cards = DataManager.load()
     }
     
 }
